@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>
-      Ionic Blank
+    <ion-title style="text-align: center;">
+      Listas de Compras
     </ion-title>
 
     <ion-buttons end>
@@ -22,9 +22,9 @@
     <ion-list>
 
       <ion-item-sliding detail-push *ngFor="let lista of listas" #itemSliding>
-        <ion-item (click)="onSave('atualizar', 'itemSliding', lista)">{{ lista.titulo }}</ion-item>
+        <ion-item (click)="abrirListaDeCompras(lista)">{{ lista.titulo }}</ion-item>
         <ion-item-options>
-          <button ion-button icon-only color="primary" (click)="onSave(lista)">
+          <button ion-button icon-only color="primary" (click)="onSave('atualizar', itemSliding, lista)">
             <ion-icon name="create"></ion-icon>
           </button>
           <button ion-button icon-only color="danger" (click)="onDelete(lista)">

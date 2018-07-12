@@ -9,12 +9,14 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { SqliteHelperService } from '../providers/sqlite-helper/sqlite-helper.service';
 import { ListaService } from '../providers/lista/lista.service';
+import { ListaItensPage } from '../pages/lista-itens/lista-itens';
 
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    ListaItensPage
   ],
   imports: [
     BrowserModule,
@@ -23,7 +25,8 @@ import { ListaService } from '../providers/lista/lista.service';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    ListaItensPage
   ],
   providers: [
     StatusBar,

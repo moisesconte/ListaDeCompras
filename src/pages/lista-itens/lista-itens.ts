@@ -1,49 +1,26 @@
 import { Component } from '@angular/core';
-import { NavController, Loading, AlertOptions, ItemSliding, AlertController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ItemSliding, AlertOptions, Loading, AlertController, LoadingController } from 'ionic-angular';
 import { Lista } from '../../models/lista.model';
-import { ListaService } from '../../providers/lista/lista.service';
-import { ListaItensPage } from '../lista-itens/lista-itens';
 
+
+
+@IonicPage()
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-lista-itens',
+  templateUrl: 'lista-itens.html',
 })
-export class HomePage {
-  listas: Lista[] = [];
+export class ListaItensPage {
 
   constructor(
-    public navCtrl: NavController,
+    public navCtrl: NavController, 
+    public navParams: NavParams,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
-    public listaService: ListaService
   ) {
-    this.listaService.getAll()
-      .then((listas: Lista[]) => {
-        this.listas = listas;
-      });
   }
 
   ionViewDidLoad() {
-    this.listaService.getAll()
-      .then((listas: Lista[]) => {
-        this.listas = listas;
-      });
-  }
-
-  abrirListaDeCompras(lista) {
-    this.navCtrl.push(ListaItensPage, {
-      lista: lista
-    });
-  }
-
-  onSave(type: string, item?: ItemSliding, lista?: Lista): void {
-    let title: string = type.charAt(0).toUpperCase() + type.substr(1); //Create
-    this.showAlert({
-      itemSliding: item,
-      titulo: `${title} Lista`,
-      type: type,
-      lista: lista
-    });
+    console.log('ionViewDidLoad ListaItensPage');
   }
 
   private showAlert(options: { itemSliding?: ItemSliding, titulo: string, type: string, lista?: Lista }): void {
@@ -86,37 +63,11 @@ export class HomePage {
         }
       ]
     };
-
     if (options.type === 'atualizar') {
       alertOptions.inputs[0]['value'] = options.lista.titulo;
     }
 
     this.alertCtrl.create(alertOptions).present();
-  }
-
-  onDelete(lista: Lista): void {
-    this.alertCtrl.create({
-      title: `Você deseja excluir a lista ${lista.titulo}?`,
-      buttons: [
-        {
-          text: 'Sim',
-          handler: () => {
-
-            let loading: Loading = this.showLoading(`Excluindo a lista ${lista.titulo}...`);
-
-            this.listaService.delete(lista.id)
-              .then((deleted: boolean) => {
-                if (deleted) {
-                  this.listas.splice(this.listas.indexOf(lista), 1);
-                }
-                loading.dismiss();
-              });
-
-          }
-        },
-        'Não'
-      ]
-    }).present();
   }
 
   private showLoading(message?: string): Loading {
