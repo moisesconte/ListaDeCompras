@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Ionic Blank
+    </ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onSave('criar')">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <!-- Se a lista for um valor falso ou um array e não tiver nenhum item nele, exibi esse paragrafo-->
+  <p *ngIf='listas && listas.length == 0; else listaCompras'>Nenhuma lista criada...</p>
+
+  <ng-template #listaCompras>
+    <ion-list>
+
+      <ion-item-sliding detail-push *ngFor="let lista of listas" #itemSliding>
+        <ion-item (click)="onSave('atualizar', 'itemSliding', lista)">{{ lista.titulo }}</ion-item>
+        <ion-item-options>
+          <button ion-button icon-only color="primary" (click)="onSave(lista)">
+            <ion-icon name="create"></ion-icon>
+          </button>
+          <button ion-button icon-only color="danger" (click)="onDelete(lista)">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+
+    </ion-list>
+  </ng-template>
+
+</ion-content>
