@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SQLiteObject } from '@ionic-native/sqlite';
 import { Lista } from '../../models/lista.model';
 import { SqliteHelperService } from '../sqlite-helper/sqlite-helper.service';
+import { Item } from '../../models/item.model';
 
 
 @Injectable()
@@ -26,6 +27,12 @@ export class ListaService {
           this.db.executeSql('CREATE TABLE IF NOT EXISTS lista (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT)', {})
             .then(success => console.log('Tabela Lista criada com sucesso!', success))
             .catch((error: Error) => console.log('Erro ao criar a tabela Lista!', error));
+
+
+          this.db.executeSql('CREATE TABLE IF NOT EXISTS itens (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, vlr DOUBLE (15,2),' +
+            'qtd DOUBLE (15,2), cod_barras TEXT, vlr_total DOUBLE (15,2), foto BLOB, id_lista INTEGER)', {})
+            .then(success => console.log('Tabela itens criada com sucesso!', success))
+            .catch((error: Error) => console.log('Erro ao criar a tabela itens!', error));
 
           return this.db;
 
@@ -94,6 +101,40 @@ export class ListaService {
       .then(resultSet => resultSet.rows.item(0))
       .catch((error: Error) => {
         console.log(`Erro ao buscar a lista com id ${id}.`, error);
+      });
+  }
+
+  addItem(item: Item): Promise<Item> {
+    return this.db.executeSql('INSERT INTO itens (nome,vlr,qtd,cod_barras,vlr_total,foto,id_lista) VALUES (?,?,?,?,?,?,?)', [item.nome, item.vlr, item.cod_barras, item.vlr_total, item.foto, item.id_lista])
+      .then(resultSet => {
+        console.log('additem', resultSet);
+        item.id = resultSet.insertId;
+        console.log('item', item);
+        return item;
+      }).catch((error: Error) => {
+        console.log(`Error ao adicionar o item '${item.nome}'  a lista de compras.`, error);
+        return Promise.reject(error.message || error);
+      });
+  }
+
+  getAllItem(id_lista: number) {
+    return this.getDb()
+      .then((db: SQLiteObject) => {
+
+        return <Promise<Item[]>>this.db.executeSql(`SELECT * FROM itens ORDER BY id DESC`, {})
+          .then(resultSet => {
+
+            console.log(resultSet);
+
+            let item: Item[] = [];
+
+            for (let i = 0; i < resultSet.rows.length; i++) {
+              item.push(resultSet.rows.item(i));
+            }
+            console.log('list, ', item);
+            return item;
+          }).catch((error: Error) => console.log('Erro na execução do metodo getAllItem.', error));
+
       });
   }
 
